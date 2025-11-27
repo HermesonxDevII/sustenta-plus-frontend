@@ -1,12 +1,12 @@
 import type { LabelHTMLAttributes } from "react"
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
-  aditionalClasses?: string
+  additionalClasses?: string
 }
 
-const Label: React.FC<LabelProps> = ({ children, aditionalClasses, ...rest }) => (
+const Label: React.FC<LabelProps> = ({ children, additionalClasses, ...rest }) => (
   <label
-    className={`font-bold text-[#485558] ${aditionalClasses}`}
+    className={`font-bold text-[#485558] ${additionalClasses}`}
     {...rest}
   >
     { children }

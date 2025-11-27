@@ -27,3 +27,18 @@
 .i-padding {
   padding: 5px;
 }
+
+.sidebar-mask {
+  mask-image: url('./assets/img/shape.png');
+  -webkit-mask-image: url('./assets/img/shape.png');
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+.auth-btn:hover {
+  background-color: #1B5E20;
+}
