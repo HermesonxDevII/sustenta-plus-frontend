@@ -39,6 +39,34 @@
   -webkit-mask-position: center;
 }
 
-.auth-btn:hover {
+.auth-btn:hover, .user-menu-btn:hover {
   background-color: #1B5E20;
+}
+
+.grid-layout {
+  grid-template-columns: 200px auto;
+  grid-template-rows: 90px auto;
+  grid-template-areas: "AS MH" "AS CT";
+}
+
+.header-layout {
+  grid-area: MH;
+}
+
+.aside-layout {
+  grid-area: AS;
+  background: #388E3C;
+  padding-left: 20px;
+  position: relative;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 999;
+}
+
+.content-layout {
+  grid-area: CT;
+  padding: 25px;
+  height: calc(100vh - 90px);
 }

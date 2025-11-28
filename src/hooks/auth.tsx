@@ -1,22 +1,24 @@
 import { createContext, useContext, useState } from "react";
-import type { LoginForm, RegisterForm } from "../utils/interfaces";
+import type { LoginForm, RegisterForm, User } from "../utils/interfaces";
 import api from "../services/api";
 import { Toast } from '../utils/toast';
 
 interface AuthProps {
-  logged: boolean,
+  user: User | null,
   loading: boolean,
   signIn(event: React.FormEvent<HTMLFormElement>, formState: LoginForm): void
   signUp(event: React.FormEvent<HTMLFormElement>, formState: RegisterForm): void
+  logout(): void
 }
 
 const AuthContext = createContext<AuthProps>({} as AuthProps)
 
 const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-  const [logged, setLogged] = useState<boolean>(() => {
-    const isLogged = localStorage.getItem('logged')
-    return !!isLogged
-  })
+
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -27,10 +29,10 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 
     await api.post('/login', formState)
       .then(response => {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        setLogged(true)
+        setUser(response.data.user)
         setLoading(false)
 
         Toast.fire({
@@ -56,10 +58,10 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 
     await api.post('/register', formState)
       .then(response => {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        setLogged(true)
+        setUser(response.data.user)
         setLoading(false)
 
         Toast.fire({
@@ -78,12 +80,18 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
       })
   }
 
+  const logout = () => {
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
+
   return (
     <AuthContext.Provider value={{
-      logged,
+      user,
       loading,
       signIn,
-      signUp
+      signUp,
+      logout
     }}>
       { children }
     </AuthContext.Provider>

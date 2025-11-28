@@ -16,3 +16,9 @@ export interface SelectOptions {
   name: string,
   value: string | number
 }
+
+export interface User {
+  name: string,
+  email: string,
+  ability: string
+}
