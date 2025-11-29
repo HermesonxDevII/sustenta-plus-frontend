@@ -1,7 +1,9 @@
-const Message: React.FC = () => (
+import type { SvgIcons } from "../../../utils/interfaces"
+
+const Message: React.FC<SvgIcons> = ({ width = '36', height = '36' }) => (
   <svg
-    width="36"
-    height="36"
+    width={width}
+    height={height}
     viewBox="0 0 45 45"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

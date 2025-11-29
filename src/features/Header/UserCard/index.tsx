@@ -1,11 +1,11 @@
 import { useAuth } from "../../../hooks/auth"
 import default_avatar from "../../../assets/img/default_avatar.png"
 import { useState } from "react"
-import AngleUp from "../icons/AngleUp"
-import AngleDown from "../icons/AngleDown"
+import AngleUp from "../../../components/Icons/AngleUp"
+import AngleDown from "../../../components/Icons/AngleDown"
 import { Link } from "react-router-dom"
-import User from "../icons/User"
-import Power from "../icons/Power/Index"
+import User from "../../../components/Icons/User"
+import Power from "../../../components/Icons/Power/Index"
 
 const UserCard: React.FC = () => {
 

@@ -1,7 +1,9 @@
-const Power: React.FC = () => (
+import type { SvgIcons } from "../../../utils/interfaces"
+
+const Power: React.FC<SvgIcons> = ({ width = '32', height = '32' }) => (
   <svg
-    width="33"
-    height="33"
+    width={width}
+    height={height}
     viewBox="0 0 40 40"
     className="text-black group-hover:text-white transition-colors"
     fill="none"

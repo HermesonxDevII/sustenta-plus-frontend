@@ -1,5 +1,5 @@
-import ChatCard from "../../features/home/ChatCard"
-import UserCard from "../../features/home/UserCard"
+import ChatCard from "../../features/Header/ChatCard"
+import UserCard from "../../features/Header/UserCard"
 
 const Header: React.FC = () => {
   return (

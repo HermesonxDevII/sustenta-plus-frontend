@@ -22,3 +22,10 @@ export interface User {
   email: string,
   ability: string
 }
+
+export interface SvgIcons {
+  width?: string,
+  height?: string,
+  stroke?: string,
+  strokeWidth?: string
+}

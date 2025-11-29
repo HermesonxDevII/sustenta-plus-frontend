@@ -1,4 +1,4 @@
-import Message from "../icons/Message"
+import Message from "../../../components/Icons/Message"
 
 const ChatCard: React.FC = () => {
   return (

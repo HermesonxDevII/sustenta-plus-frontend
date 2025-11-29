@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import Layout from "../components/Layout"
-import { useAuth } from "../hooks/auth"
+// import { useAuth } from "../hooks/auth"
 import Home from "../pages/Home"
 
 const AppRoutes: React.FC = () => {
 
-  const { user } = useAuth()
+  // const { user } = useAuth()
 
   return (
     <Layout>

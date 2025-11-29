@@ -1,7 +1,9 @@
-const AngleDown: React.FC = () => (
+import type { SvgIcons } from "../../../utils/interfaces"
+
+const AngleDown: React.FC<SvgIcons> = ({ width = '23', height = '23' }) => (
   <svg
-    width="23"
-    height="23"
+    width={width}
+    height={height}
     viewBox="0 0 30 30"
     className="mt-1"
     fill="none"

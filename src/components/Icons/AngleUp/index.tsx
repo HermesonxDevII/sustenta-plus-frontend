@@ -1,7 +1,9 @@
-const AngleUp: React.FC = () => (
+import type { SvgIcons } from "../../../utils/interfaces"
+
+const AngleUp: React.FC<SvgIcons> = ({ width = '23', height = '23' }) => (
   <svg
-    width="23"
-    height="23"
+    width={width}
+    height={height}
     viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
