@@ -145,8 +145,8 @@ const SignUp: React.FC = () => {
 
           <div className="flex w-[45%] mx-auto">
             <Button
-              background="bg-primary"
-              additionalClasses="shadow-lg auth-btn"
+              additionalClasses="transition-btn"
+              shadow
             >
               Registrar
             </Button>

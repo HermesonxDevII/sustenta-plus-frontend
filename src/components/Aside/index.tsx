@@ -16,7 +16,7 @@ const Aside: React.FC = () => {
         <div className="flex flex-col gap-2 font-bold text-white">
           <Link
             className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/register"
+            to="/home"
           >
             <Dashboard />
             Inicio
@@ -24,7 +24,7 @@ const Aside: React.FC = () => {
 
           <Link
             className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/register"
+            to="/reports"
           >
             <Document />
             Reportes
@@ -32,7 +32,7 @@ const Aside: React.FC = () => {
 
           <Link
             className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/register"
+            to="/schedulings"
           >
             <Calendar />
             Agendamentos
@@ -40,7 +40,7 @@ const Aside: React.FC = () => {
 
           <Link
             className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/register"
+            to="/collection-orders"
           >
             <Bell />
             Pedidos de Coleta

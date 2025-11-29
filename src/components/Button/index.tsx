@@ -1,13 +1,24 @@
 import type { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  background: string
+  width?: string
+  height?: string
+  background?: string
+  shadow?: boolean
   additionalClasses?: string
 }
 
-const Button: React.FC<ButtonProps> = ({ children, background, additionalClasses, ...rest }) => (
+const Button: React.FC<ButtonProps> = ({
+  children,
+  width = 'w-full',
+  height = 'h-10',
+  background = 'bg-primary',
+  additionalClasses,
+  shadow,
+  ...rest
+}) => (
   <button
-    className={`w-full h-10 text-white ${background} font-bold ${additionalClasses} rounded-md transition duration-300 cursor-pointer`}
+    className={`${width} ${height} text-white ${background} font-bold ${additionalClasses} rounded-md transition duration-300 cursor-pointer ${shadow && 'shadow-lg'}`}
     {...rest}
   >
     { children }

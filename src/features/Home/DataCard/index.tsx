@@ -1,3 +1,4 @@
+import CountUp from "react-countup"
 import Calendar from "../../../components/Icons/Calendar"
 import Document from "../../../components/Icons/Document"
 import Title from "../../../components/Title"
@@ -31,7 +32,13 @@ const DataCard: React.FC<DataCardProps> = ({ title, count, icon }) => (
 
     <div className="flex flex-col h-auto pt-1">
       <Title color="black" size="xl">{title}</Title>
-      <Title color="black" size="3xl">{count}</Title>
+      <Title color="black" size="3xl">
+        <CountUp
+          start={0}
+          end={Number(count)}
+          duration={2.5}
+        />
+      </Title>
     </div>
   </div>
 )

@@ -75,8 +75,8 @@ const SignIn: React.FC = () => {
 
           <div className="flex w-[45%] mx-auto">
             <Button
-              background="bg-primary"
-              additionalClasses="shadow-lg auth-btn"
+              additionalClasses="transition-btn"
+              shadow
             >
               Logar
             </Button>
