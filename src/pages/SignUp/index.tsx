@@ -3,11 +3,11 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Label from "../../components/Label";
 import type { RegisterForm } from "../../utils/interfaces";
-import logo from "../../assets/img/logo.png";
 import { useAuth } from "../../hooks/auth";
 import { Link } from "react-router-dom";
 import Select from "../../components/Select";
 import { maskCPF } from "../../utils/functions";
+import Logo from "../../components/Icons/Logo";
 
 const SignUp: React.FC = () => {
   const { signUp } = useAuth();
@@ -48,9 +48,7 @@ const SignUp: React.FC = () => {
     <div className="flex h-screen bg-primary">
       <div className="flex flex-row m-auto h-1/2 w-1/2 shadow-lg">
         <div className="flex bg-secondary h-full w-[30%] rounded-l-lg items-center justify-center">
-          <div className="sidebar-mask">
-            <img src={logo} alt="Sustenta+" className="w-64" />
-          </div>
+          <Logo />
         </div>
 
         <form
@@ -147,8 +145,8 @@ const SignUp: React.FC = () => {
 
           <div className="flex w-[45%] mx-auto">
             <Button
-              background="bg-primary"
-              additionalClasses="shadow-lg auth-btn"
+              additionalClasses="transition-btn"
+              shadow
             >
               Registrar
             </Button>

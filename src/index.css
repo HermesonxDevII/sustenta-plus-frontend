@@ -39,6 +39,48 @@
   -webkit-mask-position: center;
 }
 
-.auth-btn:hover {
+.side-bar-option:hover {
   background-color: #1B5E20;
+}
+
+.transition-btn:hover, .user-menu-btn:hover {
+  background-color: #1B5E20;
+}
+
+.transition-delete-button:hover {
+  background-color: #a32020;
+}
+
+.transition-cancel-button:hover {
+  background-color: #909293;
+}
+
+.grid-layout {
+  grid-template-columns: 250px auto;
+  grid-template-rows: 90px auto;
+  grid-template-areas: "AS MH" "AS CT";
+}
+
+.header-layout {
+  grid-area: MH;
+}
+
+.aside-layout {
+  grid-area: AS;
+}
+
+.content-layout {
+  grid-area: CT;
+}
+
+.badge-green {
+  background-color: #4CAF50;
+}
+
+.badge-yellow {
+  background-color: #FFC107;
+}
+
+.badge-red {
+  background-color: #D32F2F;
 }
