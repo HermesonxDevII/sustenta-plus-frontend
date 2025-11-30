@@ -64,3 +64,15 @@
 .content-layout {
   grid-area: CT;
 }
+
+.badge-green {
+  background-color: #4CAF50;
+}
+
+.badge-yellow {
+  background-color: #FFC107;
+}
+
+.badge-red {
+  background-color: #D32F2F;
+}

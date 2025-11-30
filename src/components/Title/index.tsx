@@ -5,7 +5,7 @@ interface TitleProps {
   children: React.ReactNode;
 }
 
-const Title: React.FC<TitleProps> = ({ color = 'white', size = '4xl', additionalClasses, children }) => (
+const Title: React.FC<TitleProps> = ({ color = 'white', size = '3xl', additionalClasses, children }) => (
   <h1 className={`text-${color} text-${size} font-bold ${additionalClasses}`}>
     { children }
   </h1>

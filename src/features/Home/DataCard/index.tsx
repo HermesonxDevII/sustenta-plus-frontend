@@ -31,7 +31,7 @@ const DataCard: React.FC<DataCardProps> = ({ title, count, icon }) => (
     </div>
 
     <div className="flex flex-col h-auto pt-1">
-      <Title color="black" size="xl">{title}</Title>
+      <Title color="black" size="">{title}</Title>
       <Title color="black" size="3xl">
         <CountUp
           start={0}

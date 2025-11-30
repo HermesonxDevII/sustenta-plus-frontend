@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import Logo from "../Icons/Logo";
 import Dashboard from "../Icons/Dashboard";
 import Bell from "../Icons/Bell";
 import Calendar from "../Icons/Calendar";
 import Document from "../Icons/Document";
+import Option from "../../features/Aside/Option";
 
 const Aside: React.FC = () => {
   return (
@@ -14,37 +14,25 @@ const Aside: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-2 font-bold text-white">
-          <Link
-            className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/home"
-          >
+          <Option to="/home">
             <Dashboard />
             Inicio
-          </Link>
+          </Option>
 
-          <Link
-            className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/reports"
-          >
+          <Option to="/reports">
             <Document />
             Reportes
-          </Link>
+          </Option>
 
-          <Link
-            className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/schedulings"
-          >
+          <Option to="/schedulings">
             <Calendar />
             Agendamentos
-          </Link>
+          </Option>
 
-          <Link
-            className="side-bar-option flex gap-3 px-2 items-center justify-start w-full h-12 rounded transition duration-300 pointer"
-            to="/collection-orders"
-          >
+          <Option to="/collection-orders">
             <Bell />
             Pedidos de Coleta
-          </Link>
+          </Option>
         </div>
       </div>
 
