@@ -27,5 +27,6 @@ export interface SvgIcons {
   width?: string,
   height?: string,
   stroke?: string,
-  strokeWidth?: string
+  strokeWidth?: string,
+  additionalClasses?: string
 }
