@@ -1,5 +1,5 @@
 interface TitleProps {
-  color?: string,
+  color?: 'white' | 'black',
   size?: string,
   additionalClasses?: string,
   children: React.ReactNode;

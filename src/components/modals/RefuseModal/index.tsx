@@ -3,10 +3,10 @@ import api from "../../../services/api"
 import { handleTranslate } from "../../../utils/functions"
 import { Toast } from "../../../utils/toast"
 import Button from "../../Button"
-import FillAccept from "../../Icons/FillAccept"
+import Close from "../../Icons/Close"
 import Modal from "../../modal"
 
-interface AcceptModalProps {
+interface RefuseModal {
   id: number | undefined,
   title: string | undefined,
   type: 'scheduling' | 'order' | 'report',
@@ -14,14 +14,14 @@ interface AcceptModalProps {
   postProcessing(): void,
 }
 
-const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, title, type }) => {
+const RefuseModal: React.FC<RefuseModal> = ({ onClose, postProcessing, id, title, type }) => {
 
   const { user, token } = useAuth()
 
   const handleSendForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await api.patch(`/${user?.ability}/${type}/accept/${id}`, [], {
+    await api.patch(`/${user?.ability}/${type}/refuse/${id}`, [], {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -48,10 +48,10 @@ const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, 
         onSubmit={(e) => handleSendForm(e)}
         className="text-center"
       >
-        <FillAccept additionalClasses="mx-auto mb-4"/>
+        <Close additionalClasses="mx-auto mb-4"/>
 
         <h3 className="text-[#485558] font-bold mb-3 text-body">
-          Você tem certeza que gostaria de aceitar esse {handleTranslate(type)}?
+          Você tem certeza que gostaria de recusar esse {handleTranslate(type)}?
         </h3>
 
         <h3 className="mb-6 text-lg text-body">
@@ -61,9 +61,10 @@ const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, 
         <div className="flex items-center space-x-4 justify-center">
           <Button
             width="w-32"
-            additionalClasses="bg-primary transition-btn"
+            background="bg-[#DC1D54]"
+            additionalClasses="transition-delete-button"
           >
-            Aceitar
+            Recusar
           </Button>
 
           <Button
@@ -80,4 +81,4 @@ const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, 
   )
 }
 
-export default AcceptModal
+export default RefuseModal

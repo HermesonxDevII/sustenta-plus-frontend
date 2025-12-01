@@ -5,6 +5,7 @@ import { Toast } from '../utils/toast';
 
 interface AuthProps {
   user: User | null,
+  token: string | null,
   loading: boolean,
   signIn(event: React.FormEvent<HTMLFormElement>, formState: LoginForm): void
   signUp(event: React.FormEvent<HTMLFormElement>, formState: RegisterForm): void
@@ -20,6 +21,8 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     return saved ? JSON.parse(saved) : null;
   });
 
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+
   const [loading, setLoading] = useState<boolean>(false)
 
   const signIn = async (event: React.FormEvent<HTMLFormElement>, formState: LoginForm) => {
@@ -32,6 +35,7 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
+        setToken(response.data.token)
         setUser(response.data.user)
         setLoading(false)
 
@@ -41,7 +45,6 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         });
       })
       .catch(error => {
-        console.log(error)
         Toast.fire({
             icon: 'error',
             title: error.response.data.error
@@ -61,6 +64,7 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
+        setToken(response.data.token)
         setUser(response.data.user)
         setLoading(false)
 
@@ -70,7 +74,6 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         });
       })
       .catch(error => {
-        console.log(error)
         Toast.fire({
             icon: 'error',
             title: error.response.data.error
@@ -88,6 +91,7 @@ const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user,
+      token,
       loading,
       signIn,
       signUp,
