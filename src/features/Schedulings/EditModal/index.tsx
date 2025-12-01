@@ -2,27 +2,24 @@ import Button from "../../../components/Button"
 import Input from "../../../components/Input"
 import Label from "../../../components/Label"
 import Modal from "../../../components/modal"
-import TextArea from "../../../components/TextArea"
 import Title from "../../../components/Title"
 import { useEffect, useState } from "react"
-import type { ReportForm, Report } from "../../../utils/interfaces"
+import type { Collection, CollectionForm } from "../../../utils/interfaces"
 import api from "../../../services/api"
 import { Toast } from "../../../utils/toast"
 import { useAuth } from "../../../hooks/auth"
 
 interface EditModalProps {
-  report: Report | undefined
+  collection: Collection | undefined,
   postProcessing(): void,
   onClose(): void
 }
 
-const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }) => {
+const EditModal: React.FC<EditModalProps> = ({ collection, postProcessing, onClose }) => {
 
   const { token } = useAuth()
 
-  const [formState, setFormState] = useState<ReportForm>({
-    title: '',
-    description: '',
+  const [formState, setFormState] = useState<CollectionForm>({
     street: '',
     number: '',
     neighborhood: '',
@@ -33,8 +30,8 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
   // const [previews, setPreviews] = useState<string[]>([])
 
   const handleChangeForm = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof ReportForm,
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: keyof CollectionForm,
   ) => {
     const { value } = event.target as HTMLInputElement
     setFormState((prev) => ({ ...prev, [key]: value }))
@@ -45,8 +42,6 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
 
     const formData = new FormData();
 
-    formData.append('title', formState.title);
-    formData.append('description', formState.description);
     formData.append('street', formState.street);
     formData.append('number', formState.number);
     formData.append('neighborhood', formState.neighborhood);
@@ -56,7 +51,7 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
       formData.append('images', file);
     });
 
-    await api.put(`/admin/report/${report?.id}`, formData, {
+    await api.put(`/admin/collection/${collection?.id}`, formData, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -80,8 +75,6 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
 
   const clearForm = () => {
     setFormState({
-      title: '',
-      description: '',
       street: '',
       number: '',
       neighborhood: '',
@@ -100,14 +93,12 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
   // }, [formState.images])
 
   useEffect(() => {
-    if(report) {
+    if(collection) {
       setFormState({
-        title: report.title,
-        description: report.description,
-        street: report.street,
-        number: report.number,
-        neighborhood: report.neighborhood,
-        postal_code: report.postal_code,
+        street: collection.street,
+        number: collection.number,
+        neighborhood: collection.neighborhood,
+        postal_code: collection.postal_code,
         images: []
       })
     }
@@ -123,32 +114,7 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
           color="black"
           size="xl"
           additionalClasses="w-full flex justify-start"
-        >Editar Reporte</Title>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Título <span className="text-red-400">*</span></Label>
-            <Input
-              type="text"
-              value={formState.title}
-              onChange={(e) => handleChangeForm(e, 'title')}
-              placeholder="Digite um título"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Descrição <span className="text-red-400">*</span></Label>
-            <TextArea
-              value={formState.description}
-              onChange={(e) => handleChangeForm(e, 'description')}
-              placeholder="Digite uma descrição"
-              required
-            ></TextArea>
-          </div>
-        </div>
+        >Editar Agendamento de Coleta</Title>
 
         <div className="w-full flex flex-row gap-3">
           <div className="w-full flex flex-col gap-1">
@@ -201,7 +167,6 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
         <div className="w-full flex gap-5 items-center justify-center">
           <Button
             width="w-32"
-            onClick={() => {}}
             background="bg-[#DC1D54]"
             additionalClasses="bg-primary transition-btn"
             shadow

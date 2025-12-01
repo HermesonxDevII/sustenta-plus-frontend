@@ -10,10 +10,10 @@ export const maskCPF = (value: string) => {
 }
 
 export const formatAddress = (
-  street: string,
-  number: string,
-  neighborhood: string,
-  postal_code: string
+  street: string | undefined,
+  number: string | undefined,
+  neighborhood: string | undefined,
+  postal_code: string | undefined
 ) => {
   if (!street) return '';
 

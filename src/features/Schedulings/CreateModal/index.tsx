@@ -2,27 +2,25 @@ import Button from "../../../components/Button"
 import Input from "../../../components/Input"
 import Label from "../../../components/Label"
 import Modal from "../../../components/modal"
-import TextArea from "../../../components/TextArea"
 import Title from "../../../components/Title"
+import Image from "../../../components/Image"
 import { useEffect, useState } from "react"
-import type { ReportForm, Report } from "../../../utils/interfaces"
+import type { CollectionForm } from "../../../utils/interfaces"
+import InputFile from "../../../components/InputFile"
 import api from "../../../services/api"
 import { Toast } from "../../../utils/toast"
 import { useAuth } from "../../../hooks/auth"
 
-interface EditModalProps {
-  report: Report | undefined
+interface CreateModalProps {
   postProcessing(): void,
   onClose(): void
 }
 
-const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }) => {
+const CreateModal: React.FC<CreateModalProps> = ({ postProcessing, onClose }) => {
 
   const { token } = useAuth()
 
-  const [formState, setFormState] = useState<ReportForm>({
-    title: '',
-    description: '',
+  const [formState, setFormState] = useState<CollectionForm>({
     street: '',
     number: '',
     neighborhood: '',
@@ -30,14 +28,40 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
     images: []
   })
 
-  // const [previews, setPreviews] = useState<string[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
 
   const handleChangeForm = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof ReportForm,
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: keyof CollectionForm,
   ) => {
     const { value } = event.target as HTMLInputElement
     setFormState((prev) => ({ ...prev, [key]: value }))
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files);
+
+      setFormState((prev) => {
+        const updatedImages = [...prev.images, ...newFiles];
+
+        if (updatedImages.length > 4) {
+          alert("Você só pode adicionar no máximo 4 fotos.");
+          return { ...prev, images: updatedImages.slice(0, 4) };
+        }
+
+        return { ...prev, images: updatedImages };
+      });
+    }
+    event.target.value = '';
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setFormState((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, index) => index !== indexToRemove)
+    }));
   };
 
   const handleSendForm = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,8 +69,6 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
 
     const formData = new FormData();
 
-    formData.append('title', formState.title);
-    formData.append('description', formState.description);
     formData.append('street', formState.street);
     formData.append('number', formState.number);
     formData.append('neighborhood', formState.neighborhood);
@@ -56,7 +78,7 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
       formData.append('images', file);
     });
 
-    await api.put(`/admin/report/${report?.id}`, formData, {
+    await api.post('/user/collection', formData, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -80,8 +102,6 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
 
   const clearForm = () => {
     setFormState({
-      title: '',
-      description: '',
       street: '',
       number: '',
       neighborhood: '',
@@ -90,28 +110,14 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
     })
   }
 
-  // useEffect(() => {
-  //   const newPreviews = formState.images.map(file => URL.createObjectURL(file))
-  //   setPreviews(newPreviews)
-
-  //   return () => {
-  //     newPreviews.forEach(url => URL.revokeObjectURL(url))
-  //   }
-  // }, [formState.images])
-
   useEffect(() => {
-    if(report) {
-      setFormState({
-        title: report.title,
-        description: report.description,
-        street: report.street,
-        number: report.number,
-        neighborhood: report.neighborhood,
-        postal_code: report.postal_code,
-        images: []
-      })
+    const newPreviews = formState.images.map(file => URL.createObjectURL(file))
+    setPreviews(newPreviews)
+
+    return () => {
+      newPreviews.forEach(url => URL.revokeObjectURL(url))
     }
-  }, [])
+  }, [formState.images])
 
   return (
     <Modal onClose={onClose}>
@@ -123,32 +129,7 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
           color="black"
           size="xl"
           additionalClasses="w-full flex justify-start"
-        >Editar Reporte</Title>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Título <span className="text-red-400">*</span></Label>
-            <Input
-              type="text"
-              value={formState.title}
-              onChange={(e) => handleChangeForm(e, 'title')}
-              placeholder="Digite um título"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Descrição <span className="text-red-400">*</span></Label>
-            <TextArea
-              value={formState.description}
-              onChange={(e) => handleChangeForm(e, 'description')}
-              placeholder="Digite uma descrição"
-              required
-            ></TextArea>
-          </div>
-        </div>
+        >Criar Agendamento de Coleta</Title>
 
         <div className="w-full flex flex-row gap-3">
           <div className="w-full flex flex-col gap-1">
@@ -198,10 +179,32 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
           </div>
         </div>
 
+        <div className="w-full flex flex-col gap-5">
+          <div className="w-full flex flex-col gap-1">
+            <Label additionalClasses="text-sm">Fotos (Máx: 4) <span className="text-red-400">*</span></Label>
+            <InputFile
+              count={formState.images.length}
+              max={4}
+              onChange={handleImageUpload}
+            />
+          </div>
+
+          {formState.images.length > 0 && (
+            <div className="w-full flex flex-row gap-2 overflow-x-auto py-2">
+              {formState.images.map((_, index) => (
+                <Image
+                  key={index}
+                  src={previews[index]}
+                  onRemove={() => removeImage(index)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="w-full flex gap-5 items-center justify-center">
           <Button
             width="w-32"
-            onClick={() => {}}
             background="bg-[#DC1D54]"
             additionalClasses="bg-primary transition-btn"
             shadow
@@ -224,4 +227,4 @@ const EditModal: React.FC<EditModalProps> = ({ report, postProcessing, onClose }
   )
 }
 
-export default EditModal
+export default CreateModal

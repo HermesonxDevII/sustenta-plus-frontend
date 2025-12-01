@@ -2,56 +2,34 @@ import Button from "../../../components/Button"
 import Input from "../../../components/Input"
 import Label from "../../../components/Label"
 import Modal from "../../../components/modal"
-import TextArea from "../../../components/TextArea"
 import Title from "../../../components/Title"
+import type { Collection } from "../../../utils/interfaces"
 import { useAuth } from "../../../hooks/auth"
-import type { Report } from "../../../utils/interfaces"
 
 interface ViewModalProps {
-  report: Report | undefined
+  collection: Collection | undefined,
   onClose(): void
 }
 
-const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
+const ViewModal: React.FC<ViewModalProps> = ({ collection, onClose }) => {
 
   const { user } = useAuth()
 
-  return(
+  return (
     <Modal onClose={onClose}>
       <div className="w-full flex flex-col gap-4 justify-center items-center">
         <Title
           color="black"
           size="xl"
           additionalClasses="w-full flex justify-start"
-        >Visualizar Reporte</Title>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Título</Label>
-            <Input
-              type="text"
-              value={report?.title}
-              disabled
-            />
-          </div>
-        </div>
-
-        <div className="w-full flex flex-row gap-3">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Descrição</Label>
-            <TextArea
-              value={report?.description}
-              disabled
-            ></TextArea>
-          </div>
-        </div>
+        >Visualização de Agendamento de Coleta</Title>
 
         <div className="w-full flex flex-row gap-3">
           <div className="w-full flex flex-col gap-1">
             <Label additionalClasses="text-sm">Rua</Label>
             <Input
               type="text"
-              value={report?.street}
+              value={collection?.street}
               disabled
             />
           </div>
@@ -60,7 +38,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
             <Label additionalClasses="text-sm">Número</Label>
             <Input
               type="text"
-              value={report?.number}
+              value={collection?.number}
               disabled
             />
           </div>
@@ -71,7 +49,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
             <Label additionalClasses="text-sm">Bairro</Label>
             <Input
               type="text"
-              value={report?.neighborhood}
+              value={collection?.neighborhood}
               disabled
             />
           </div>
@@ -80,34 +58,11 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
             <Label additionalClasses="text-sm">CEP</Label>
             <Input
               type="text"
-              value={report?.postal_code}
+              value={collection?.postal_code}
               disabled
             />
           </div>
         </div>
-
-        {/* <div className="w-full flex flex-col gap-5">
-          <div className="w-full flex flex-col gap-1">
-            <Label additionalClasses="text-sm">Fotos (Máx: 4)</Label>
-            <InputFile
-              count={report?.images.length}
-              max={4}
-              onChange={handleImageUpload}
-            />
-          </div>
-
-          {report?.images.length > 0 && (
-            <div className="w-full flex flex-row gap-2 overflow-x-auto py-2">
-              {report?.images.map((_, index) => (
-                <Image
-                  key={index}
-                  src={previews[index]}
-                  onRemove={() => removeImage(index)}
-                />
-              ))}
-            </div>
-          )}
-        </div> */}
 
         {user?.ability === 'admin' &&
           <>
@@ -122,7 +77,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
                 <Label additionalClasses="text-sm">Nome</Label>
                 <Input
                   type="text"
-                  value={report?.user.name}
+                  value={collection?.user.name}
                   disabled
                 />
               </div>
@@ -131,7 +86,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
                 <Label additionalClasses="text-sm">CPF</Label>
                 <Input
                   type="text"
-                  value={report?.user.CPF}
+                  value={collection?.user.CPF}
                   disabled
                 />
               </div>
@@ -142,7 +97,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
                 <Label additionalClasses="text-sm">Email</Label>
                 <Input
                   type="text"
-                  value={report?.user.email}
+                  value={collection?.user.email}
                   disabled
                 />
               </div>
@@ -151,13 +106,92 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
                 <Label additionalClasses="text-sm">Celular</Label>
                 <Input
                   type="text"
-                  value={report?.user.phone}
+                  value={collection?.user.phone}
                   disabled
                 />
               </div>
             </div>
           </>
         }
+
+        {user?.ability === 'collector' &&
+          <>
+            <Title
+              color="black"
+              size="xl"
+              additionalClasses="w-full flex justify-start"
+            >Informações do reclamante</Title>
+
+            <div className="w-full flex flex-row gap-3">
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">Nome</Label>
+                <Input
+                  type="text"
+                  value={collection?.user.name}
+                  disabled
+                />
+              </div>
+
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">Celular</Label>
+                <Input
+                  type="text"
+                  value={collection?.user.phone}
+                  disabled
+                />
+              </div>
+            </div>
+          </>
+        }
+        {/* {user?.ability === 'admin' && collection?.usersInteracting &&
+          <>
+            <Title
+              color="black"
+              size="xl"
+              additionalClasses="w-full flex justify-start"
+            >Informações do coletor</Title>
+
+            <div className="w-full flex flex-row gap-3">
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">Nome</Label>
+                <Input
+                  type="text"
+                  value={collection?.usersInteracting.name}
+                  disabled
+                />
+              </div>
+
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">CPF</Label>
+                <Input
+                  type="text"
+                  value={collection?.usersInteracting.CPF}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="w-full flex flex-row gap-3">
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">Email</Label>
+                <Input
+                  type="text"
+                  value={collection?.usersInteracting.email}
+                  disabled
+                />
+              </div>
+
+              <div className="w-full flex flex-col gap-1">
+                <Label additionalClasses="text-sm">Celular</Label>
+                <Input
+                  type="text"
+                  value={collection?.usersInteracting.phone}
+                  disabled
+                />
+              </div>
+            </div>
+          </>
+        } */}
 
         <div className="w-full flex gap-5 items-center justify-center">
           <Button
@@ -167,7 +201,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ report, onClose }) => {
             additionalClasses="transition-cancel-button"
             shadow
           >
-            Fechar
+            Cancelar
           </Button>
         </div>
       </div>

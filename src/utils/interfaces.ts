@@ -61,12 +61,62 @@ export interface Report {
   ],
   status: {
     name: string
+  },
+  user: {
+    name: string,
+    CPF: string,
+    email: string,
+    phone: string
   }
 }
 
-export interface CreateReportForm {
+export interface Collection {
+  id: number,
+  user_id: number,
+  street: string,
+  number: string,
+  neighborhood: string,
+  postal_code: string,
+  status_id: number,
+  deleted_at: string | null,
+  created_at: string,
+  updated_at: string,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string | null,
+  usersInteracting: [
+    {
+      name: string,
+      CPF: string,
+      email: string,
+      phone: string
+    }
+  ],
+  photos: [
+    path: string
+  ],
+  status: {
+    name: string
+  },
+  user: {
+    name: string,
+    CPF: string,
+    email: string,
+    phone: string
+  }
+}
+
+export interface ReportForm {
   title: string,
   description: string,
+  street: string,
+  number: string,
+  neighborhood: string,
+  postal_code: string,
+  images: File[]
+}
+
+export interface CollectionForm {
   street: string,
   number: string,
   neighborhood: string,

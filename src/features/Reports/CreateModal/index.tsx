@@ -6,7 +6,7 @@ import TextArea from "../../../components/TextArea"
 import Title from "../../../components/Title"
 import Image from "../../../components/Image"
 import { useEffect, useState } from "react"
-import type { CreateReportForm } from "../../../utils/interfaces"
+import type { ReportForm } from "../../../utils/interfaces"
 import InputFile from "../../../components/InputFile"
 import api from "../../../services/api"
 import { Toast } from "../../../utils/toast"
@@ -21,7 +21,7 @@ const CreateModal: React.FC<CreateModalProps> = ({ postProcessing, onClose }) =>
 
   const { token } = useAuth()
 
-  const [formState, setFormState] = useState<CreateReportForm>({
+  const [formState, setFormState] = useState<ReportForm>({
     title: '',
     description: '',
     street: '',
@@ -35,7 +35,7 @@ const CreateModal: React.FC<CreateModalProps> = ({ postProcessing, onClose }) =>
 
   const handleChangeForm = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof CreateReportForm,
+    key: keyof ReportForm,
   ) => {
     const { value } = event.target as HTMLInputElement
     setFormState((prev) => ({ ...prev, [key]: value }))
