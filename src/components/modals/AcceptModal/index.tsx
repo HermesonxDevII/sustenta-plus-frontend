@@ -16,12 +16,12 @@ interface AcceptModalProps {
 
 const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, title, type }) => {
 
-  const { token } = useAuth()
+  const { user, token } = useAuth()
 
   const handleSendForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await api.patch(`/admin/${type}/approve/${id}`, [], {
+    await api.patch(`/${user?.ability}/${type}/accept/${id}`, [], {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -61,7 +61,6 @@ const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, 
         <div className="flex items-center space-x-4 justify-center">
           <Button
             width="w-32"
-            onClick={() => {}}
             additionalClasses="bg-primary transition-btn"
           >
             Aceitar

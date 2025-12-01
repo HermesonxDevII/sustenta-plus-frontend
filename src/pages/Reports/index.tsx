@@ -7,12 +7,10 @@ import GridHeader from "../../components/Grid/GridHeader"
 import GridItem from "../../components/Grid/GridItem"
 import Eye from "../../components/Icons/Eye"
 import Pen from "../../components/Icons/Pen"
-import Trash from "../../components/Icons/Trash"
 import SearchInput from "../../components/SearchInput"
 import Title from "../../components/Title"
 import type { PagesModals, Report } from "../../utils/interfaces"
 import Button from "../../components/Button"
-import DeleteModal from "../../components/modals/DeleteModal"
 import CreateModal from "../../features/Reports/CreateModal"
 import api from "../../services/api"
 import { useAuth } from "../../hooks/auth"
@@ -23,6 +21,10 @@ import ViewModal from "../../features/Reports/ViewModal"
 import EditModal from "../../features/Reports/EditModal"
 import AcceptModal from "../../components/modals/AcceptModal"
 import Accept from "../../components/Icons/Accept"
+import RefuseModal from "../../components/modals/RefuseModal"
+import Refuse from "../../components/Icons/Refuse"
+import Trash from "../../components/Icons/Trash"
+import DeleteModal from "../../components/modals/DeleteModal"
 
 const Reports: React.FC = () => {
 
@@ -40,6 +42,7 @@ const Reports: React.FC = () => {
     edit: false,
     view: false,
     accept: false,
+    refuse: false,
     delete: false,
   })
 
@@ -49,6 +52,7 @@ const Reports: React.FC = () => {
       edit: false,
       view: false,
       accept: false,
+      refuse: false,
       delete: false,
       [option]: value
     })
@@ -162,10 +166,16 @@ const Reports: React.FC = () => {
                         <Accept />
                       </ActionButton>
 
-                      <ActionButton onClick={() => handleModalsClick('delete', true, report.id)}>
-                        <Trash />
+                      <ActionButton onClick={() => handleModalsClick('refuse', true, report.id)}>
+                        <Refuse />
                       </ActionButton>
                     </>
+                  }
+
+                  {user?.ability === 'user' && report.status_id === 4 &&
+                    <ActionButton onClick={() => handleModalsClick('delete', true, report.id)}>
+                      <Trash />
+                    </ActionButton>
                   }
                 </GridItem>
               </GridBody>
@@ -216,10 +226,23 @@ const Reports: React.FC = () => {
         />
       }
 
+      {modals.refuse &&
+        <RefuseModal
+          id={report?.id}
+          type="report"
+          title={report?.title}
+          onClose={() => handleModalsClick('refuse', false)}
+          postProcessing={fetchReports}
+        />
+      }
+
       {modals.delete &&
         <DeleteModal
-          type="reporte"
+          id={report?.id}
+          type="report"
+          title={report?.title}
           onClose={() => handleModalsClick('delete', false)}
+          postProcessing={fetchReports}
         />
       }
     </>
