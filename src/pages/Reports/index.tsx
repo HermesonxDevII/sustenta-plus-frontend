@@ -1,7 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ActionButton from "../../components/ActionButton"
-import ActionLink from "../../components/ActionLink"
-import Anchor from "../../components/Anchor"
 import Badge from "../../components/Badge"
 import GridBody from "../../components/Grid/GridBody"
 import GridContainer from "../../components/Grid/GridContainer"
@@ -10,35 +8,106 @@ import GridItem from "../../components/Grid/GridItem"
 import Eye from "../../components/Icons/Eye"
 import Pen from "../../components/Icons/Pen"
 import Trash from "../../components/Icons/Trash"
-import DeleteModal from "../../components/modals/DeleteModal"
 import SearchInput from "../../components/SearchInput"
 import Title from "../../components/Title"
+import type { PagesModals, Report } from "../../utils/interfaces"
+import Button from "../../components/Button"
+import DeleteModal from "../../components/modals/DeleteModal"
+import CreateModal from "../../features/Reports/CreateModal"
+import api from "../../services/api"
+import { useAuth } from "../../hooks/auth"
+import { Toast } from "../../utils/toast"
+import { formatAddress, formatDateTimeBR, handleBadgeColor } from "../../utils/functions"
+import Pagination from "../../components/Pagination"
 
 const Reports: React.FC = () => {
 
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+  const { token } = useAuth()
+
+  const [reports, setReports] = useState<Report[]>([])
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const itemsPerPage: number = 6;
+
+  const [modals, setModals] = useState<PagesModals>({
+    create: false,
+    edit: false,
+    view: false,
+    delete: false,
+  })
+
+  const handleModalsClick = (option: keyof PagesModals, value: boolean = true) => {
+    setModals({
+      create: false,
+      edit: false,
+      view: false,
+      delete: false,
+      [option]: value
+    })
+  }
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const fetchReports = async () => {
+    await api.get(`/user/report?page=${currentPage}&limit=${itemsPerPage}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      setReports(response.data.reports)
+      setTotalPages(response.data.totalPages)
+    })
+    .catch(error => {
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.error
+      });
+    })
+  }
+
+  useEffect(() => {
+    fetchReports()
+  }, [token, currentPage])
 
   return (
     <>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 h-full">
         <div className="flex flex-row justify-between w-full">
           <Title>Reportes</Title>
 
-          <Anchor
-            to="/"
+          <Button
+            onClick={() => handleModalsClick('create')}
             width="w-1/6"
             background="bg-secondary"
             additionalClasses="transition-btn"
             shadow
-          >Adicionar Reporte</Anchor>
+          >Adicionar Reporte</Button>
         </div>
 
         <div className="flex justify-end">
           <SearchInput />
         </div>
 
-        <div className="bg-white p-8 rounded-xl">
-          <GridContainer>
+        <div className="bg-white p-8 rounded-xl flex flex-col flex-grow overflow-hidden">
+          <GridContainer additionalClasses="flex-grow overflow-y-auto">
             <GridHeader
               gridCols="grid-cols-[1fr_1fr_1fr_0.5fr_0.5fr]"
             >
@@ -49,39 +118,61 @@ const Reports: React.FC = () => {
               <GridItem>Ações</GridItem>
             </GridHeader>
 
-            <GridBody
-              gridCols="grid-cols-[1fr_1fr_1fr_0.5fr_0.5fr]"
-            >
-              <GridItem additionalClasses="h-15">Buraco na rua</GridItem>
-              <GridItem additionalClasses="h-15">R. Teste, 999 - Messejana</GridItem>
-              <GridItem additionalClasses="h-15">13/11/2025 ás 18:17</GridItem>
+            {reports.map(report => (
+              <GridBody
+                key={report.id}
+                gridCols="grid-cols-[1fr_1fr_1fr_0.5fr_0.5fr]"
+              >
+                <GridItem additionalClasses="h-15">{report.title}</GridItem>
+                <GridItem additionalClasses="h-15">
+                  {formatAddress(report.street, report.number, report.neighborhood, report.postal_code)}
+                </GridItem>
+                <GridItem additionalClasses="h-15">{formatDateTimeBR(report.createdAt)}</GridItem>
+                <GridItem additionalClasses="h-15">
+                  <Badge color={handleBadgeColor(report.status.name)}>
+                    {report.status.name}
+                  </Badge>
+                </GridItem>
+                <GridItem additionalClasses="h-15 gap-2">
+                  <ActionButton onClick={() => handleModalsClick('view')}>
+                    <Eye />
+                  </ActionButton>
 
-              <GridItem additionalClasses="h-15">
-                <Badge color="yellow">Em Análise</Badge>
-              </GridItem>
+                  <ActionButton onClick={() => handleModalsClick('edit')}>
+                    <Pen />
+                  </ActionButton>
 
-              <GridItem additionalClasses="h-15 gap-2">
-                <ActionLink to="/">
-                  <Eye />
-                </ActionLink>
-
-                <ActionLink to="/">
-                  <Pen />
-                </ActionLink>
-
-                <ActionButton onClick={() => setOpenDeleteModal(!openDeleteModal)}>
-                  <Trash />
-                </ActionButton>
-              </GridItem>
-            </GridBody>
+                  <ActionButton onClick={() => handleModalsClick('delete')}>
+                    <Trash />
+                  </ActionButton>
+                </GridItem>
+              </GridBody>
+            ))}
           </GridContainer>
+
+          <div className="flex justify-start">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPrev={handlePrevPage}
+              onNext={handleNextPage}
+              onPageClick={handlePageClick}
+            />
+          </div>
         </div>
       </div>
 
-      {openDeleteModal &&
+      {modals.create &&
+        <CreateModal
+          onClose={() => handleModalsClick('create', false)}
+          postProcessing={fetchReports}
+        />
+      }
+
+      {modals.delete &&
         <DeleteModal
           type="reporte"
-          onClose={() => setOpenDeleteModal(!openDeleteModal)}
+          onClose={() => handleModalsClick('delete', false)}
         />
       }
     </>

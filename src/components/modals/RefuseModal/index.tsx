@@ -1,20 +1,20 @@
 import Button from "../../Button"
-import FillAccept from "../../Icons/FillAccept"
+import Close from "../../Icons/Close"
 import Modal from "../../modal"
 
-interface AcceptModal {
+interface RefuseModal {
   onClose(): void
   type: 'agendamento' | 'pedido' | 'reporte'
 }
 
-const AcceptModal: React.FC<AcceptModal> = ({ onClose, type }) => {
+const RefuseModal: React.FC<RefuseModal> = ({ onClose, type }) => {
   return (
     <Modal onClose={onClose}>
       <div className="text-center">
-        <FillAccept additionalClasses="mx-auto mb-4"/>
+        <Close additionalClasses="mx-auto mb-4"/>
 
         <h3 className="text-[#485558] font-bold mb-3 text-body">
-          Você tem certeza que gostaria de aceitar esse {type}?
+          Você tem certeza que gostaria de recusar esse {type}?
         </h3>
 
         <h3 className="mb-6 text-lg text-body">
@@ -25,9 +25,10 @@ const AcceptModal: React.FC<AcceptModal> = ({ onClose, type }) => {
           <Button
             width="w-32"
             onClick={() => {}}
-            additionalClasses="bg-primary transition-btn"
+            background="bg-[#DC1D54]"
+            additionalClasses="transition-delete-button"
           >
-            Aceitar
+            Excluir
           </Button>
 
           <Button
@@ -44,4 +45,4 @@ const AcceptModal: React.FC<AcceptModal> = ({ onClose, type }) => {
   )
 }
 
-export default AcceptModal
+export default RefuseModal

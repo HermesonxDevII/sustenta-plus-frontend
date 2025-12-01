@@ -31,7 +31,7 @@ interface GridHeaderProps {
  * @returns TSX.Element
  */
 const GridHeader: React.FC<GridHeaderProps> = ({ children, gridCols, additionalClasses }) => (
-  <div className={`h-10 bg-[#F3F6F9] flex items-center grid ${gridCols} rounded-lg ${additionalClasses}`}>
+  <div className={`h-10 bg-[#F3F6F9] flex flex-shrink-0 justify-center items-center grid ${gridCols} rounded-lg ${additionalClasses}`}>
     {children}
   </div>
 )

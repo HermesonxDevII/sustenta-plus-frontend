@@ -23,7 +23,7 @@ interface GridContainerProps {
  * @returns TSX.Element
  */
 const GridContainer: React.FC<GridContainerProps> = ({ children, additionalClasses }) => (
-  <div className={`w-full flex flex-col gap-1 ${additionalClasses}`}>
+  <div className={`w-full flex flex-col gap-1 overflow-y-auto ${additionalClasses}`}>
     {children}
   </div>
 )
