@@ -62,3 +62,10 @@ export function handleBadgeColor(status: string) {
   if (status === 'Recusado') return "red"
   return "green"
 }
+
+export function handleTranslate(type: string) {
+  if (type === 'report') return "reporte"
+  if (type === 'order') return "pedido"
+  if (type === 'scheduling') return "agendamento"
+}
+

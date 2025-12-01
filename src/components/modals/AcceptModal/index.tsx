@@ -1,24 +1,61 @@
+import { useAuth } from "../../../hooks/auth"
+import api from "../../../services/api"
+import { handleTranslate } from "../../../utils/functions"
+import { Toast } from "../../../utils/toast"
 import Button from "../../Button"
 import FillAccept from "../../Icons/FillAccept"
 import Modal from "../../modal"
 
-interface AcceptModal {
-  onClose(): void
-  type: 'agendamento' | 'pedido' | 'reporte'
+interface AcceptModalProps {
+  id: number | undefined,
+  title: string | undefined,
+  type: 'scheduling' | 'order' | 'report',
+  onClose(): void,
+  postProcessing(): void,
 }
 
-const AcceptModal: React.FC<AcceptModal> = ({ onClose, type }) => {
+const AcceptModal: React.FC<AcceptModalProps> = ({ onClose, postProcessing, id, title, type }) => {
+
+  const { token } = useAuth()
+
+  const handleSendForm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    await api.patch(`/admin/${type}/approve/${id}`, [], {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      Toast.fire({
+        icon: 'success',
+        title: response.data.message
+      });
+      onClose()
+      postProcessing()
+    })
+    .catch(error => {
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.error
+      });
+    })
+  }
+
   return (
     <Modal onClose={onClose}>
-      <div className="text-center">
+      <form
+        onSubmit={(e) => handleSendForm(e)}
+        className="text-center"
+      >
         <FillAccept additionalClasses="mx-auto mb-4"/>
 
         <h3 className="text-[#485558] font-bold mb-3 text-body">
-          Você tem certeza que gostaria de aceitar esse {type}?
+          Você tem certeza que gostaria de aceitar esse {handleTranslate(type)}?
         </h3>
 
         <h3 className="mb-6 text-lg text-body">
-          R. Teste, 999 - Messejana, 60842-220
+          {title}
         </h3>
 
         <div className="flex items-center space-x-4 justify-center">
@@ -39,7 +76,7 @@ const AcceptModal: React.FC<AcceptModal> = ({ onClose, type }) => {
             Cancelar
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   )
 }

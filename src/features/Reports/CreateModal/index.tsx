@@ -242,7 +242,7 @@ const CreateModal: React.FC<CreateModalProps> = ({ postProcessing, onClose }) =>
             additionalClasses="bg-primary transition-btn"
             shadow
           >
-            Criar
+            Salvar
           </Button>
 
           <Button

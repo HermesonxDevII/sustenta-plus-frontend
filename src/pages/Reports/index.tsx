@@ -19,11 +19,16 @@ import { useAuth } from "../../hooks/auth"
 import { Toast } from "../../utils/toast"
 import { formatAddress, formatDateTimeBR, handleBadgeColor } from "../../utils/functions"
 import Pagination from "../../components/Pagination"
+import ViewModal from "../../features/Reports/ViewModal"
+import EditModal from "../../features/Reports/EditModal"
+import AcceptModal from "../../components/modals/AcceptModal"
+import Accept from "../../components/Icons/Accept"
 
 const Reports: React.FC = () => {
 
-  const { token } = useAuth()
+  const { user, token } = useAuth()
 
+  const [report, setReport] = useState<Report>()
   const [reports, setReports] = useState<Report[]>([])
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -34,17 +39,24 @@ const Reports: React.FC = () => {
     create: false,
     edit: false,
     view: false,
+    accept: false,
     delete: false,
   })
 
-  const handleModalsClick = (option: keyof PagesModals, value: boolean = true) => {
+  const handleModalsClick = (option: keyof PagesModals, value: boolean, id?: number) => {
     setModals({
       create: false,
       edit: false,
       view: false,
+      accept: false,
       delete: false,
       [option]: value
     })
+
+    if (id) {
+      const report = reports.find(report => report.id === id)
+      setReport(report)
+    }
   }
 
   const handlePrevPage = () => {
@@ -66,7 +78,7 @@ const Reports: React.FC = () => {
   };
 
   const fetchReports = async () => {
-    await api.get(`/user/report?page=${currentPage}&limit=${itemsPerPage}`, {
+    await api.get(`/${user?.ability}/report?page=${currentPage}&limit=${itemsPerPage}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -93,13 +105,15 @@ const Reports: React.FC = () => {
         <div className="flex flex-row justify-between w-full">
           <Title>Reportes</Title>
 
-          <Button
-            onClick={() => handleModalsClick('create')}
-            width="w-1/6"
-            background="bg-secondary"
-            additionalClasses="transition-btn"
-            shadow
-          >Adicionar Reporte</Button>
+          {user?.ability === 'user' &&
+            <Button
+              onClick={() => handleModalsClick('create', true)}
+              width="w-1/6"
+              background="bg-secondary"
+              additionalClasses="transition-btn"
+              shadow
+            >Adicionar Reporte</Button>
+          }
         </div>
 
         <div className="flex justify-end">
@@ -134,17 +148,25 @@ const Reports: React.FC = () => {
                   </Badge>
                 </GridItem>
                 <GridItem additionalClasses="h-15 gap-2">
-                  <ActionButton onClick={() => handleModalsClick('view')}>
+                  <ActionButton onClick={() => handleModalsClick('view', true, report.id)}>
                     <Eye />
                   </ActionButton>
 
-                  <ActionButton onClick={() => handleModalsClick('edit')}>
-                    <Pen />
-                  </ActionButton>
+                  {user?.ability === 'admin' && report?.status_id === 1 &&
+                    <>
+                      <ActionButton onClick={() => handleModalsClick('edit', true, report.id)}>
+                        <Pen />
+                      </ActionButton>
 
-                  <ActionButton onClick={() => handleModalsClick('delete')}>
-                    <Trash />
-                  </ActionButton>
+                      <ActionButton onClick={() => handleModalsClick('accept', true, report.id)}>
+                        <Accept />
+                      </ActionButton>
+
+                      <ActionButton onClick={() => handleModalsClick('delete', true, report.id)}>
+                        <Trash />
+                      </ActionButton>
+                    </>
+                  }
                 </GridItem>
               </GridBody>
             ))}
@@ -165,6 +187,31 @@ const Reports: React.FC = () => {
       {modals.create &&
         <CreateModal
           onClose={() => handleModalsClick('create', false)}
+          postProcessing={fetchReports}
+        />
+      }
+
+      {modals.view &&
+        <ViewModal
+          report={report}
+          onClose={() => handleModalsClick('view', false)}
+        />
+      }
+
+      {modals.edit &&
+        <EditModal
+          report={report}
+          onClose={() => handleModalsClick('edit', false)}
+          postProcessing={fetchReports}
+        />
+      }
+
+      {modals.accept &&
+        <AcceptModal
+          id={report?.id}
+          type="report"
+          title={report?.title}
+          onClose={() => handleModalsClick('accept', false)}
           postProcessing={fetchReports}
         />
       }
